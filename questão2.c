@@ -2,38 +2,38 @@
 #include <string.h> 
 #include <stdlib.h> 
 
-char *add_name(char *string){ //adiciona nome a listas
-    printf("Digite o nome que deseja adicionar: "); //solicita o nome
-    getchar(); //consome \n
-    char *s = (char*)malloc(sizeof(char) * 100); //declaraçao da variavel auxiliar
-    scanf("%[^\n]", s); //le o novo nome
+char *add_name(char *string){ 
+    printf("Digite o nome que deseja adicionar: "); 
+    getchar(); 
+    char *s = (char*)malloc(sizeof(char) * 100); 
+    scanf("%[^\n]", s);
 
     if (string == NULL){ //verifica se string ja possui algum conteudo
         string = (char *) malloc(sizeof(char) * (strlen(s) + 2));
-        strcpy(string, s); //concatena as strings adicionando o novo nome no final
+        strcpy(string, s); 
     }
     else{
-        string = (char *) realloc(string, (strlen(string) + strlen(s) + 2)); //realoca o tamanho da string
-        strcat(string, s); //concatena as strings adicionando o novo nome no final
+        string = (char *) realloc(string, (strlen(string) + strlen(s) + 2)); 
+        strcat(string, s); 
     }
 
     strcat(string, "|");
          
-    if(string == NULL){ //testa se consegui alocar a memoria
-        printf("Erro!"); //caso nao tenha conseguido notifica o erro
+    if(string == NULL){ //verifica se consegui alocar a memoria
+        printf("Erro!"); 
         exit(1);
     }
 
-    free(s);// desaloca s
+    free(s);
     return string;
 }
 
 char *remove_name(char *string){
     if (string != NULL){
-        printf("Digite o nome que deseja remover: "); //solicita o nome
+        printf("Digite o nome que deseja remover: "); 
         getchar();
-        char *r = (char*)malloc(sizeof(char) * 100); // declaraçao variavel auxiliar
-        scanf("%[^\n]", r); //le o nome a ser removido
+        char *r = (char*)malloc(sizeof(char) * 100); 
+        scanf("%[^\n]", r); 
 
         int encontrar = 0;//flag
 
@@ -43,11 +43,11 @@ char *remove_name(char *string){
         while(s != NULL){
             if(strcmp (s, r) != 0){ //verifica se o token eh o nome a ser removido
                 if (guarda == NULL){
-                    guarda = (char *) malloc(sizeof(char) * (strlen(s) + 2)); //realoca o tamanho da string guarda
+                    guarda = (char *) malloc(sizeof(char) * (strlen(s) + 2)); 
                     strcpy(guarda,s);
                 }
                 else{                
-                    guarda = (char *) realloc(guarda, (strlen(guarda) + strlen(s) + 2)); //realoca o tamanho da string guarda
+                    guarda = (char *) realloc(guarda, (strlen(guarda) + strlen(s) + 2)); 
                     strcat(guarda,s);
                 }
                 strcat(guarda,"|");
@@ -81,7 +81,7 @@ char *remove_name(char *string){
 }
  
 
-void show(char *string){ //lista os nomes presentes na string
+void show(char *string){ 
     if(string != NULL){
         while (*string){
             if(*string != '|'){
@@ -102,7 +102,7 @@ void show(char *string){ //lista os nomes presentes na string
  
 int main(){
     
-    char *string = NULL;//declaração do ponteiro para a string
+    char *string = NULL;
 
     do{
         printf("Escolha uma opção:\n 1)Adicionar\n 2)Remover\n 3)Listar\n 4)Sair\n"); //menu
@@ -118,7 +118,7 @@ int main(){
                 show(string);
                 break;
             case '4':
-                free(string); //desaloca na memoria
+                free(string); 
                 exit(1);
             default: 
                 printf("Opção inexistente\n");
