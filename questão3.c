@@ -105,7 +105,7 @@ void listar(void *pBuffer){
 
 int main(){
     
-    void *pBuffer = malloc(sizeof(int)); //indice
+    void *pBuffer = malloc(sizeof(int));
 
     if(pBuffer == NULL){ //verifica se conseguiu alocar 
         printf("Erro!"); 
