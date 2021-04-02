@@ -20,42 +20,48 @@ void *incluir(void *pBuffer){
 }
 
 void *apagar(void *pBuffer){
-    char *nome = (char*)malloc(sizeof(char) * 10); 
-    printf("Digite o nome do usuario que deseja remover: ");
-    getchar();
-    scanf("%[^\n]", nome);
+    if(*(int*)(pBuffer) > 0){
+        char *nome = (char*)malloc(sizeof(char) * 10); 
+        printf("Digite o nome do usuario que deseja remover: ");
+        getchar();
+        scanf("%[^\n]", nome);
 
-    int *encontrar = (int*)malloc(sizeof(int)); //flag
-    *encontrar = 0;
+        int *encontrar = (int*)malloc(sizeof(int)); //flag
+        *encontrar = 0;
 
-    for(int p_contador = 0; p_contador < *(int*)(pBuffer); p_contador++){
+        for(int p_contador = 0; p_contador < *(int*)(pBuffer); p_contador++){
 
-        if(strcmp((char *)(pBuffer + sizeof(int) + (sizeof(char) * 10 + sizeof(int)*2) * p_contador), nome) == 0){            
+            if(strcmp((char *)(pBuffer + sizeof(int) + (sizeof(char) * 10 + sizeof(int)*2) * p_contador), nome) == 0){       
+                if ((p_contador) != *(int*)(pBuffer)){
         
-            if((p_contador + 1) < *(int*)(pBuffer)){
-        
-                for(int contador_aux = (p_contador + 1); contador_aux < *(int *)(pBuffer); contador_aux++){ //puxa tudo que tem depois do usuario a ser removido para uma posição antes
-                    strcpy((char *)(pBuffer + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1)), (char *)(pBuffer + sizeof(int) + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux)); 
-                    *(int *)(pBuffer + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1))=*(int *)(pBuffer + sizeof(int) + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux); 
-                    *(int *)(pBuffer + sizeof(int) + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1))=*(int *)(pBuffer + sizeof(int)*2 + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux); 
+                    for(int contador_aux = (p_contador + 1); contador_aux < *(int *)(pBuffer); contador_aux++){ //puxa tudo que tem depois do usuario a ser removido para uma posição antes
+                        strcpy((char *)(pBuffer + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1)), (char *)(pBuffer + sizeof(int) + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux)); 
+                        *(int *)(pBuffer + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1))=*(int *)(pBuffer + sizeof(int) + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux); 
+                        *(int *)(pBuffer + sizeof(int) + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * (contador_aux - 1))=*(int *)(pBuffer + sizeof(int)*2 + sizeof(char)*10 + (sizeof(char) * 10 + sizeof(int)*2) * contador_aux); 
+                        p_contador++;
+                   }
+
                 }
-        
+                pBuffer = (void *)realloc(pBuffer, sizeof(int)*1+ (sizeof(char)*10 + sizeof(int)*2) * (*((int*)(pBuffer)) - 1));    
+                *encontrar = 1;
+                *(int*)(pBuffer) -= 1; //reduz o total de usuarios
+
             }
-            pBuffer = (void *)realloc(pBuffer, sizeof(int)*1+ (sizeof(char)*10 + sizeof(int)*2) * (*((int*)(pBuffer)) - 1));    
-            *(int*)(pBuffer) -= 1; //reduz o total de usuarios
-            *encontrar = 1;
+
         }
 
-        break;
-    }
+        if(*encontrar == 0){
+            printf("Usuário não encontrado!\n");    
+        }
 
-    if(*encontrar != 1){
-        printf("Usuário não encontrado!\n");    
+        free(nome);
+        free(encontrar);     
     }
-
-    free(nome);
-    free(encontrar);     
+    else{
+        printf("Lista vazia!\n");
+    }
     return pBuffer;
+
 }
 
 
