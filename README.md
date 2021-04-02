@@ -1,5 +1,6 @@
 # Projects presented to the discipline of algorithms and data structure
-##Questão 1
+
+#Questão 1
 Faça um projeto "olá mundo" em C no VSCODE e use o debug com break point no printf.
 
 ## Questão 2
