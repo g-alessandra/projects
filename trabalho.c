@@ -15,14 +15,14 @@ typedef struct{
     int telefone;
 }Dados;
 
-typedef struct{ //estrutura do NodoPessoa = Nodo
+typedef struct nodo{ //estrutura do NodoPessoa = Nodo
     Dados dados;
-    struct Nodo *prox;
-    struct Nodo *anterior;
+    struct nodo *prox;
+    struct nodo *anterior;
 }Nodo;
 
 typedef struct{
-    int contador, encontrar;
+    int contador, encontrar, i;
     char nomeProcurado[10];
     Nodo *inicio;
     Nodo *fim;
@@ -32,7 +32,7 @@ typedef struct{
     Nodo *aux2;
 }Controle;
 
-void incluir(void *pBuffer){ //insere no inicio da lista
+void incluir(Controle *pBuffer){ //insere no inicio da lista
     Nodo *novoNodo;
     novoNodo = (Nodo *)malloc(sizeof(Nodo));
     novoNodo->prox = NULL;
@@ -68,63 +68,63 @@ void incluir(void *pBuffer){ //insere no inicio da lista
 }
 
 
-/*void apagar(void *pBuffer){
-    if(*(int*)(pBuffer) == 0){
+void apagar(Controle *pBuffer){
+    if(pBuffer->contador == 0){
         printf("    AGENDA VAZIA\n");
     }
     else{
         printf("Digite o nome do usuário que deseja apagar: "); 
         getchar();
-        scanf("%[^\n]", (char *)(pBuffer + (3)*sizeof(int)));
+        scanf("%[^\n]", pBuffer->nomeProcurado);
 
-        *(int *)(pBuffer + (1)*sizeof(int)) = 0; //encontrar
+        pBuffer->encontrar = 0; //encontrar
         
-        percorrer = inicio;
+        pBuffer->percorrer = pBuffer->inicio;
     
-        for(*(int *)(pBuffer + (2)*sizeof(int)) = 0; *(int *)(pBuffer + (2)*sizeof(int)) < *(int *)(pBuffer); *(int *)(pBuffer + (2)*sizeof(int))+=1){
+        for(pBuffer->i = 0; pBuffer->i < pBuffer->contador; pBuffer->i+=1){
             
-            if(strcmp(percorrer->dados.nome, (char *)(pBuffer + (3)*sizeof(int))) == 0){
-                if(*(int *)(pBuffer) == 1){ //se eh o unico elemento
-                    inicio = NULL;
-                    fim = NULL;
+            if(strcmp(pBuffer->percorrer->dados.nome, pBuffer->nomeProcurado) == 0){
+                if(pBuffer->contador == 1){ //se eh o unico elemento
+                    pBuffer->inicio = NULL;
+                    pBuffer->fim = NULL;
                 }
                 else{
-                    if(percorrer == inicio){ //eh o primeiro
-                        percorrer = percorrer->prox;
-                        percorrer->anterior = NULL;
+                    if(pBuffer->percorrer == pBuffer->inicio){ //eh o primeiro
+                        pBuffer->percorrer = pBuffer->percorrer->prox;
+                        pBuffer->percorrer->anterior = NULL;
                         
-                        inicio = percorrer;
+                        pBuffer->inicio = pBuffer->percorrer;
                     }
                     else{
-                        if(percorrer == fim){ //eh o ultimo
-                            percorrer = percorrer->anterior;
-                            percorrer->prox = NULL;
+                        if(pBuffer->percorrer == pBuffer->fim){ //eh o ultimo
+                            pBuffer->percorrer = pBuffer->percorrer->anterior;
+                            pBuffer->percorrer->prox = NULL;
                             
-                            fim = percorrer;
+                            pBuffer->fim = pBuffer->percorrer;
                         }
                         else{ //ta no meio
-                            aux = percorrer->anterior; //guarda o anterior
-                            aux->prox = percorrer->prox; //aponta o proximo para proximo após o apagado
-                            aux2 = percorrer->prox; //guarda o proximo
-                            aux2->anterior = percorrer->anterior;
+                            pBuffer->aux = pBuffer->percorrer->anterior; //guarda o anterior
+                            pBuffer->aux->prox = pBuffer->percorrer->prox; //aponta o proximo para proximo após o apagado
+                            pBuffer->aux2 = pBuffer->percorrer->prox; //guarda o proximo
+                            pBuffer->aux2->anterior = pBuffer->percorrer->anterior;
                         }
                     }
                 }
 
-                *(int *)(pBuffer + (1)*sizeof(int)) = 1; //foi encontrado
-                *(int *)(pBuffer) -= 1; //contador
-                *(int *)(pBuffer + (2)*sizeof(int)) = *(int *)(pBuffer); //completa o for, sai do loop
+                pBuffer->encontrar = 1; //foi encontrado
+                pBuffer->contador -= 1; //contador
+                pBuffer->i = pBuffer->contador; //completa o for, sai do loop
             }
             
-            percorrer = percorrer->prox; //avança percorrer
+            pBuffer->percorrer = pBuffer->percorrer->prox; //avança percorrer
             
         }
         
-        if(*(int *)(pBuffer + (1)*sizeof(int)) != 1){
+        if(pBuffer->encontrar != 1){
             printf("Usuário não encontrado!\n");    
         }
     }
-}*/
+}
 
 
 void buscar(Controle *pBuffer){
@@ -185,27 +185,28 @@ void imprimir(Controle *pBuffer){
 }*/
 
 
-/*funçoes de ordenar
+/*funçoes de ordenar: a cada elemento da lista encadeada verifica a posição correta e insere na fila 
+
 void ordenaI(void *pBuffer){
     ordenada = inicio;
 }
 
 
 void ordenaA(void *pBuffer){
-   aux = inicio;
+   pBuffer->aux = pBuffer->inicio;
 
-    for(percorrer = inicio; percorrer != NULL; percorrer = percorrer->prox){
-        while(aux->prox != NULL){
-            if(percorrer->dados.idade > aux->dados.idade){
-                ordenada = percorrer;
+    for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
+        while(pBuffer->aux->prox != NULL){
+            if(pBuffer->percorrer->dados.idade > pBuffer->aux->dados.idade){
+                pBuffer->ordenada = pBuffer->percorrer;
             }
-            aux=aux->prox;
+            pBuffer->aux=aux->prox;
         }
-        //falta remover o nodo aramazendo do aux
-        ordenada = ordenada->prox;
+        //remover o nodo aramazendo do aux
+        pBuffer->ordenada = pBuffer->ordenada->prox;
     }
-}
-*/
+}*/
+
 
 int main(){
 //    void *pBuffer = (void *)malloc((3)*sizeof(int) + (10)*(sizeof(char)) + (6)*sizeof(Nodo)); //contador de pessoas, flag encontrar, nome(buscar/remover), ...;
@@ -231,7 +232,7 @@ int main(){
                 incluir(pBuffer);
                 break;
             case '2':
-               // apagar(pBuffer);
+                apagar(pBuffer);
                 break;
             case '3':
                 buscar(pBuffer);
