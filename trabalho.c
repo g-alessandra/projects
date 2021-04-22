@@ -21,13 +21,16 @@ typedef struct{ //estrutura do NodoPessoa = Nodo
     struct Nodo *anterior;
 }Nodo;
 
-Nodo *inicio = NULL;
-Nodo *fim = NULL;
-Nodo *percorrer = NULL;
-Nodo *ordenada = NULL;
-Nodo *aux;
-Nodo *aux2;
-
+typedef struct{
+    int contador, encontrar;
+    char nomeProcurado[10];
+    Nodo *inicio;
+    Nodo *fim;
+    Nodo *percorrer;
+    Nodo *ordenada;
+    Nodo *aux;
+    Nodo *aux2;
+}Controle;
 
 void incluir(void *pBuffer){ //insere no inicio da lista
     Nodo *novoNodo;
@@ -50,22 +53,22 @@ void incluir(void *pBuffer){ //insere no inicio da lista
     scanf("%d", &novoNodo->dados.telefone);       
     
 
-    if(inicio == NULL){
-        inicio = novoNodo;
-        inicio->anterior = NULL;
+    if(pBuffer->inicio == NULL){
+        pBuffer->inicio = novoNodo;
+        pBuffer->inicio->anterior = NULL;
     }
     else{
-        novoNodo->anterior = fim;
-        fim->prox = novoNodo;
+        novoNodo->anterior = pBuffer->fim;
+        pBuffer->fim->prox = novoNodo;
     }
     
-    fim = novoNodo;
+    pBuffer->fim = novoNodo;
     
-    *(int*)(pBuffer) += 1; //contador
+    pBuffer->contador += 1; //contador
 }
 
 
-void apagar(void *pBuffer){
+/*void apagar(void *pBuffer){
     if(*(int*)(pBuffer) == 0){
         printf("    AGENDA VAZIA\n");
     }
@@ -121,48 +124,48 @@ void apagar(void *pBuffer){
             printf("Usuário não encontrado!\n");    
         }
     }
-}
+}*/
 
 
-void buscar(void *pBuffer){
-    if(*(int*)(pBuffer) == 0){
+void buscar(Controle *pBuffer){
+    if(pBuffer->contador == 0){
         printf("    AGENDA VAZIA\n");
     }
     else{
         printf("Digite o nome do usuário que deseja buscar: "); 
         getchar();
-        scanf("%[^\n]", (char *)(pBuffer + (3)*sizeof(int)));
+        scanf("%[^\n]", pBuffer->nomeProcurado);
 
-        *(int *)(pBuffer + (1)*sizeof(int)) = 0; //encontrar
+        pBuffer->encontrar = 0; //encontrar
     
         printf("    AGENDA\n");
-        for(percorrer = inicio; percorrer != NULL; percorrer = percorrer->prox){
-            if(strcmp(percorrer->dados.nome, (char *)(pBuffer + (3)*sizeof(int))) == 0){
-                printf("Nome: %s |  ", percorrer->dados.nome); 
-                printf("Idade: %d | ", percorrer->dados.idade); 
-                printf("Telefone: %d \n", percorrer->dados.telefone); 
+        for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
+            if(strcmp(pBuffer->percorrer->dados.nome, pBuffer->nomeProcurado) == 0){
+                printf("Nome: %s |  ", pBuffer->percorrer->dados.nome); 
+                printf("Idade: %d | ", pBuffer->percorrer->dados.idade); 
+                printf("Telefone: %d \n", pBuffer->percorrer->dados.telefone); 
                 
-                *(int *)(pBuffer + (1)*sizeof(int)) = 1;
+                pBuffer->encontrar = 1;
             }
         }
         
-        if(*(int *)(pBuffer + (1)*sizeof(int)) != 1){
+        if(pBuffer->encontrar != 1){
             printf("Usuário não encontrado!\n");    
         }
     }
 }
 
 
-void imprimir(void *pBuffer){  
-    if(*(int*)(pBuffer) == 0){
+void imprimir(Controle *pBuffer){  
+    if(pBuffer->contador == 0){
         printf("    AGENDA VAZIA\n");
     }
     else{
         printf("    AGENDA\n");
-        for(percorrer = inicio; percorrer != NULL; percorrer = percorrer->prox){
-            printf("Nome: %s |  ", percorrer->dados.nome); 
-            printf("Idade: %d | ", percorrer->dados.idade); 
-            printf("Telefone: %d \n", percorrer->dados.telefone); 
+        for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
+            printf("Nome: %s |  ", pBuffer->percorrer->dados.nome); 
+            printf("Idade: %d | ", pBuffer->percorrer->dados.idade); 
+            printf("Telefone: %d \n", pBuffer->percorrer->dados.telefone); 
         }
     }
 }
@@ -205,14 +208,20 @@ void ordenaA(void *pBuffer){
 */
 
 int main(){
-    void *pBuffer = (void *)malloc((3)*sizeof(int) + (10)*(sizeof(char)) + (6)*sizeof(Nodo)); //contador de pessoas, flag encontrar, nome(buscar/remover), ...;
+//    void *pBuffer = (void *)malloc((3)*sizeof(int) + (10)*(sizeof(char)) + (6)*sizeof(Nodo)); //contador de pessoas, flag encontrar, nome(buscar/remover), ...;
+    Controle *pBuffer;
+    pBuffer = malloc(sizeof(Controle));
 
     if(pBuffer == NULL){ //verifica se conseguiu alocar 
         printf("Erro!"); 
         exit(1); 
     }
 
-    *(int*)pBuffer = 0;
+    pBuffer->contador = 0;
+    pBuffer->inicio = NULL;
+    pBuffer->fim = NULL;
+    pBuffer->percorrer = NULL;
+    pBuffer->ordenada = NULL;
 
     do{
         printf("Escolha uma opção:\n 1)Incluir\n 2)Apagar\n 3)Busar\n 4)Listar\n 5)Sair\n"); //menu
@@ -222,7 +231,7 @@ int main(){
                 incluir(pBuffer);
                 break;
             case '2':
-                apagar(pBuffer);
+               // apagar(pBuffer);
                 break;
             case '3':
                 buscar(pBuffer);
