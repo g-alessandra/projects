@@ -22,14 +22,16 @@ typedef struct nodo{ //estrutura do NodoPessoa = Nodo
 }Nodo;
 
 typedef struct{
-    int contador, encontrar, i;
+    int contador, encontrar, i, j;
     char nomeProcurado[10];
     Nodo *inicio;
     Nodo *fim;
     Nodo *percorrer;
-    Nodo *ordenada;
+//    Nodo *ordenada;
     Nodo *aux;
     Nodo *aux2;
+    Nodo *inicioOrdenada;
+    Nodo *fimOrdenada;
 }Controle;
 
 void incluir(Controle *pBuffer){ //insere no inicio da lista
@@ -153,6 +155,8 @@ void buscar(Controle *pBuffer){
             printf("Usuário não encontrado!\n");    
         }
     }
+    //imprimir(pBuffer)
+    //pBuffer->ordenada = NULL;
 }
 
 
@@ -162,7 +166,7 @@ void imprimir(Controle *pBuffer){
     }
     else{
         printf("    AGENDA\n");
-        for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
+        for(pBuffer->percorrer = pBuffer->inicioOrdenada; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
             printf("Nome: %s |  ", pBuffer->percorrer->dados.nome); 
             printf("Idade: %d | ", pBuffer->percorrer->dados.idade); 
             printf("Telefone: %d \n", pBuffer->percorrer->dados.telefone); 
@@ -170,46 +174,42 @@ void imprimir(Controle *pBuffer){
     }
 }
 
-/*void imprimir2(void *pBuffer){  
-    if(*(int*)(pBuffer) == 0){
-        printf("    AGENDA VAZIA\n");
+
+//funçoes de ordenar: a cada elemento da lista encadeada verifica a posição correta e insere na fila 
+void copiar(Controle *pBuffer){ //insere no inicio da lista
+    Nodo *novo;
+    novo = (Nodo *)malloc(sizeof(Nodo));
+    novo->prox = NULL;
+
+    if(novo == NULL){ //verifica se conseguiu alocar 
+        printf("Erro!"); 
+        exit(1); 
+    }
+    
+    novo->dados = pBuffer->percorrer->dados;       
+
+    if(pBuffer->inicioOrdenada == NULL){
+        pBuffer->inicioOrdenada = novo;
+        pBuffer->inicioOrdenada->anterior = NULL;
     }
     else{
-        printf("    AGENDA ordenada\n");
-        for(percorrer = ordenada; percorrer != NULL; percorrer = percorrer->prox){
-            printf("Nome: %s |  ", percorrer->dados.nome); 
-            printf("Idade: %d | ", percorrer->dados.idade); 
-            printf("Telefone: %d \n", percorrer->dados.telefone); 
-        }
+        novo->anterior = pBuffer->fimOrdenada;
+        pBuffer->fimOrdenada->prox = novo;
     }
-}*/
+    
+    pBuffer->fimOrdenada = novo;
+}
 
-
-/*funçoes de ordenar: a cada elemento da lista encadeada verifica a posição correta e insere na fila 
-
-void ordenaI(void *pBuffer){
-    ordenada = inicio;
+void ordenaI(Controle *pBuffer){
+    for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
+        copiar(pBuffer);
+    }
 }
 
 
-void ordenaA(void *pBuffer){
-   pBuffer->aux = pBuffer->inicio;
-
-    for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){
-        while(pBuffer->aux->prox != NULL){
-            if(pBuffer->percorrer->dados.idade > pBuffer->aux->dados.idade){
-                pBuffer->ordenada = pBuffer->percorrer;
-            }
-            pBuffer->aux=aux->prox;
-        }
-        //remover o nodo aramazendo do aux
-        pBuffer->ordenada = pBuffer->ordenada->prox;
-    }
-}*/
 
 
 int main(){
-//    void *pBuffer = (void *)malloc((3)*sizeof(int) + (10)*(sizeof(char)) + (6)*sizeof(Nodo)); //contador de pessoas, flag encontrar, nome(buscar/remover), ...;
     Controle *pBuffer;
     pBuffer = malloc(sizeof(Controle));
 
@@ -222,7 +222,7 @@ int main(){
     pBuffer->inicio = NULL;
     pBuffer->fim = NULL;
     pBuffer->percorrer = NULL;
-    pBuffer->ordenada = NULL;
+//    pBuffer->ordenada = NULL;
 
     do{
         printf("Escolha uma opção:\n 1)Incluir\n 2)Apagar\n 3)Busar\n 4)Listar\n 5)Sair\n"); //menu
@@ -247,10 +247,17 @@ int main(){
                     case '3':
                         ordenaP(pBuffer)
                 }
-*/                imprimir(pBuffer);
-
-//                  ordenaA(pBuffer);
-//                 imprimir2(pBuffer);
+                    
+*/
+                //teste
+                ordenaI(pBuffer);
+                imprimir(pBuffer);
+                pBuffer->inicioOrdenada = NULL;
+                pBuffer->fimOrdenada = NULL;/*
+                ordenaA(pBuffer);
+                imprimir(pBuffer);
+                pBuffer->inicioOrdenada = NULL;
+                pBuffer->fimOrdenada = NULL;*/
                 break;    
             case '5':
                 free(pBuffer);
