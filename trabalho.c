@@ -193,7 +193,7 @@ void ordenaI(Controle *pBuffer){ //insere no inicio da lista
 void ordenaA(Controle *pBuffer){
     pBuffer->inicioOrdenada = NULL;
     pBuffer->fimOrdenada = NULL;
-    pBuffer->contadorOrdenada == 0;    
+    pBuffer->contadorOrdenada = 0;    
 
     for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
         Nodo *novo;
@@ -226,7 +226,7 @@ void ordenaA(Controle *pBuffer){
             pBuffer->fimOrdenada = novo;  
         }
         else{//tem + de 2 elementos, vai no meio ou inicio 
-            for(pBuffer->i = pBuffer->contadorOrdenada; (pBuffer->i < 0) && (strcmp(pBuffer->fimOrdenadaCopia->dados.nome, novo->dados.nome) < 0 ); pBuffer->i -= 1){
+            for(pBuffer->i = pBuffer->contadorOrdenada; (pBuffer->i > 0) && (strcmp(novo->dados.nome, pBuffer->fimOrdenadaCopia->dados.nome) < 0 ); pBuffer->i -= 1){ //erro n1
                 if(pBuffer->i == pBuffer->contadorOrdenada){ //novo sera o penultimo
 
                     pBuffer->aux2 = pBuffer->fimOrdenadaCopia->anterior;        //guarda o penultimo
@@ -240,7 +240,7 @@ void ordenaA(Controle *pBuffer){
 
                     pBuffer->fimOrdenada = pBuffer->fimOrdenadaCopia;           //original recebe 
                 }
-                else if(pBuffer->i == (pBuffer->contadorOrdenada - 1)){         //novo fica no inicio
+                else if(pBuffer->i == (pBuffer->contadorOrdenada - 1)){         //novo fica no inicio ___________________________________________________________________________erro
                     pBuffer->aux2 = novo->prox;                                 //guarda novo
                     pBuffer->aux2->anterior = pBuffer->fimOrdenadaCopia;
                     
