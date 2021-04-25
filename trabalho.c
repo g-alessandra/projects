@@ -162,9 +162,6 @@ void imprimir(Controle *pBuffer){
 
 
 void ordenaI(Controle *pBuffer){ //insere no inicio da lista 
-    pBuffer->inicioOrdenada = NULL;
-    pBuffer->fimOrdenada = NULL;
-    
     for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
     
         Nodo *novo;
@@ -188,10 +185,6 @@ void ordenaI(Controle *pBuffer){ //insere no inicio da lista
 
 
 void ordenaAlfabetica(Controle *pBuffer){
-    pBuffer->inicioOrdenada = NULL;
-    pBuffer->fimOrdenada = NULL;
-    pBuffer->contadorOrdenada = 0;    
-
     for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
         Nodo *novo;
         novo = (Nodo *)malloc(sizeof(Nodo));
@@ -272,10 +265,6 @@ void ordenaAlfabetica(Controle *pBuffer){
 }
 
 void ordenaAlfabeticaDecrescente(Controle *pBuffer){
-    pBuffer->inicioOrdenada = NULL;
-    pBuffer->fimOrdenada = NULL;
-    pBuffer->contadorOrdenada = 0;    
-
     for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
         Nodo *novo;
         novo = (Nodo *)malloc(sizeof(Nodo));
@@ -296,18 +285,18 @@ void ordenaAlfabeticaDecrescente(Controle *pBuffer){
             pBuffer->fimOrdenada = novo;
         }
         
-        else if((pBuffer->contadorOrdenada == 1) && (strcmp(novo->dados.nome, pBuffer->inicioOrdenada->dados.nome) < 0)){                 //insere no inicio, e so tem um elemento
+        else if((pBuffer->contadorOrdenada == 1) && (strcmp(novo->dados.nome, pBuffer->inicioOrdenada->dados.nome) > 0)){  //insere no inicio, e so tem um elemento
             pBuffer->inicioOrdenada->anterior = novo;                               //anterior do q tem sera o novo 
             novo->prox = pBuffer->inicioOrdenada;                                   //proximo do novo eh o q estava no fim;
             pBuffer->inicioOrdenada = novo;                                         //novo fica no inicio 
         }
-        else if((pBuffer->contadorOrdenada >= 1) && (strcmp(novo->dados.nome, pBuffer->fimOrdenada->dados.nome) >= 0)){   //insere no fim
+        else if((pBuffer->contadorOrdenada >= 1) && (strcmp(novo->dados.nome, pBuffer->fimOrdenada->dados.nome) <= 0)){   //insere no fim
             novo->anterior = pBuffer->fimOrdenada;
             pBuffer->fimOrdenada->prox = novo;
             pBuffer->fimOrdenada = novo;  
         }
         else{//tem + de 2 elementos, vai no meio ou inicio 
-            for(pBuffer->i = pBuffer->contadorOrdenada; (pBuffer->i > 0) && (strcmp(novo->dados.nome, pBuffer->fimOrdenadaCopia->dados.nome) < 0 ); pBuffer->i -= 1){ //erro n1
+            for(pBuffer->i = pBuffer->contadorOrdenada; (pBuffer->i > 0) && (strcmp(novo->dados.nome, pBuffer->fimOrdenadaCopia->dados.nome) > 0 ); pBuffer->i -= 1){ //erro n1
                 if(pBuffer->i == pBuffer->contadorOrdenada){ //novo sera o penultimo
 
                     pBuffer->aux2 = pBuffer->fimOrdenadaCopia->anterior;        //guarda o penultimo
@@ -357,10 +346,6 @@ void ordenaAlfabeticaDecrescente(Controle *pBuffer){
 
 
 void ordenaIdade(Controle *pBuffer){
-pBuffer->inicioOrdenada = NULL;
-    pBuffer->fimOrdenada = NULL;
-    pBuffer->contadorOrdenada = 0;    
-
     for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
         Nodo *novo;
         novo = (Nodo *)malloc(sizeof(Nodo));
@@ -441,7 +426,82 @@ pBuffer->inicioOrdenada = NULL;
 
 
 void ordenaIdadeDecrecente(Controle *pBuffer){
+    for(pBuffer->percorrer = pBuffer->inicio; pBuffer->percorrer != NULL; pBuffer->percorrer = pBuffer->percorrer->prox){//percorre a lista pra inserir
+        Nodo *novo;
+        novo = (Nodo *)malloc(sizeof(Nodo));
+        novo->anterior = NULL;
+        novo->prox = NULL;
+
+        if(novo == NULL){ //verifica se conseguiu alocar 
+            printf("Erro!"); 
+            exit(1); 
+        }
     
+        novo->dados = pBuffer->percorrer->dados;
+        
+        pBuffer->fimOrdenadaCopia = pBuffer->fimOrdenada;//copia de fimOrdenada
+
+        if(pBuffer->inicioOrdenada == NULL){//eh o primeiro a ser inserido
+            pBuffer->inicioOrdenada = novo;
+            pBuffer->fimOrdenada = novo;
+        }
+        
+        else if((pBuffer->contadorOrdenada == 1) && (novo->dados.idade > pBuffer->inicioOrdenada->dados.idade)){  //insere no inicio, e so tem um elemento
+            pBuffer->inicioOrdenada->anterior = novo;                               //anterior do q tem sera o novo 
+            novo->prox = pBuffer->inicioOrdenada;                                   //proximo do novo eh o q estava no fim;
+            pBuffer->inicioOrdenada = novo;                                         //novo fica no inicio 
+        }
+        else if((pBuffer->contadorOrdenada >= 1) && (novo->dados.idade <= pBuffer->fimOrdenada->dados.idade)){   //insere no fim
+            novo->anterior = pBuffer->fimOrdenada;
+            pBuffer->fimOrdenada->prox = novo;
+            pBuffer->fimOrdenada = novo;  
+        }
+        else{//tem + de 2 elementos, vai no meio ou inicio 
+            for(pBuffer->i = pBuffer->contadorOrdenada; (pBuffer->i > 0) && (novo->dados.idade > pBuffer->fimOrdenadaCopia->dados.idade); pBuffer->i -= 1){ //erro n1
+                if(pBuffer->i == pBuffer->contadorOrdenada){ //novo sera o penultimo
+
+                    pBuffer->aux2 = pBuffer->fimOrdenadaCopia->anterior;        //guarda o penultimo
+                    pBuffer->aux2->prox = novo;                                 //prox do salvo eh o novo
+                    
+                    novo->anterior = pBuffer->aux2;                             //anterior do novo eh o salvo
+                   
+                    pBuffer->fimOrdenadaCopia->anterior = novo;                 //penultimo eh o novo
+                    
+                    novo->prox = pBuffer->fimOrdenadaCopia;                     //prox do novo eh o ultimo
+
+                    pBuffer->fimOrdenada = pBuffer->fimOrdenadaCopia;           //original recebe 
+                }
+                else if(pBuffer->i == 1){         //novo fica depois inicio
+                    pBuffer->aux2 = novo->prox;                                 //aux2 recebe prox de novo
+                    pBuffer->aux2->anterior = novo->anterior;                   // anterior<-novo  <-aux2-> novo->prox
+                    
+                    novo->prox->anterior = pBuffer->aux2->anterior;
+                    novo->anterior->prox = pBuffer->aux2;
+                    novo->anterior->anterior = novo;
+                    novo->prox = pBuffer->aux2->anterior;
+                    novo->anterior = NULL;
+                    pBuffer->inicioOrdenada = novo;                             
+                }
+                else{ //novo fica em qualquer lugar entre o segundo e o penultimo
+                    pBuffer->aux2 = pBuffer->fimOrdenadaCopia->anterior;
+                    pBuffer->aux2->prox = novo;
+                    
+                    novo->anterior = pBuffer->aux2;
+                    
+                    pBuffer->aux2 = novo->prox;
+                    pBuffer->aux2->anterior = pBuffer->fimOrdenadaCopia;
+                    
+                    pBuffer->fimOrdenadaCopia->prox = pBuffer->aux2;
+                    pBuffer->fimOrdenadaCopia->anterior = novo; 
+                    
+                    novo->prox = pBuffer->fimOrdenadaCopia;
+                }
+                pBuffer->fimOrdenadaCopia = novo->anterior;//vai evitar lista infinita
+            }
+        }
+        
+        pBuffer->contadorOrdenada += 1;    
+    }      
 }
 
 
@@ -477,6 +537,9 @@ int main(){
                 buscar(pBuffer);
                 break;
             case '4':
+                pBuffer->inicioOrdenada = NULL;
+                pBuffer->fimOrdenada = NULL;
+                pBuffer->contadorOrdenada = 0;  
                 printf("Escolha o parâmetro de ordenação desejado:\n"); 
                 printf(" 1)Ordenação por ordem de inserção\n 2)Ordenação por ordem alfabética crescente\n 3)Ordenação por ordem alfabética decrescente\n 4)Ordenação por idade crescente\n 5)Ordenação por idade decrescente\n");
                 scanf("%d", &pBuffer->i);
