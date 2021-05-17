@@ -8,25 +8,16 @@ typedef struct Nodo{
     struct Nodo *esq, *dir;
 }Nodo;
 
-void imprime(Nodo *raiz){ //imprime o conteudo da arvore
-    if(raiz != NULL){
-        printf("%d(", raiz->conteudo);
-        imprime(raiz->esq);
-        imprime(raiz->dir);
-        printf(")");   
-    }
-}
-
-int Altura(Nodo* raiz){
+int Altura(Nodo* raiz){ //altura da arvoree
     int iEsq, iDir;
-    if (raiz == NULL){
+    if (raiz == NULL){ //arvore vazia a altura eh 0
         return 0;
     }
     
-    iEsq = Altura(raiz->esq);
-    iDir = Altura(raiz->dir);
+    iEsq = Altura(raiz->esq); //função ocorre de forma recursiva 
+    iDir = Altura(raiz->dir); //até percorrer toda arvore
     
-    if(iEsq > iDir){
+    if(iEsq > iDir){ //retornando a altura do maior lado 
         return iEsq + 1;
     }
     else{
@@ -47,6 +38,16 @@ void limpa(Nodo *raiz){ //limpa arvore
         free(raiz->dir);
         free(raiz);
     }
+}
+
+int menor(Nodo *atual){ //busca o valor do menor nodo
+    Nodo *n = atual;
+    Nodo *n2 = atual->esq;
+    while (n2 != NULL){
+        n = n2;
+        n2 = n2->esq;
+    }
+    return n->conteudo;
 }
 
 void RSE(Nodo **raizP){ //rotação simples esq
@@ -117,10 +118,12 @@ int insere(Nodo **raizP, int infoNodo){
 
     else if ( (*raizP)->conteudo > infoNodo){
         if ( insere(&(*raizP)->esq,infoNodo)){
-            if (Balanceamento(raizP))
+            if (Balanceamento(raizP)){
                 return 0;
-            else
+            }
+            else{
                 return 1;
+            }
         }
     }
 
@@ -143,6 +146,55 @@ int insere(Nodo **raizP, int infoNodo){
     }
 }
 
+void imprime(Nodo *raiz){ //imprime o conteudo da arvore
+    if(raiz != NULL){
+        printf("%d(", raiz->conteudo);
+        imprime(raiz->esq);
+        imprime(raiz->dir);
+        printf(")");   
+    }
+}
+
+int remover(Nodo **raizP, int infoNodo){ //retorna 1 se encontra 
+    Nodo *removido = NULL;
+    if(*raizP == NULL){ //arvore vazia
+        printf("Não encontrado!\n");
+        return 0;
+    }
+    
+    if((*raizP)->conteudo > infoNodo){ //se esta na arvore, esta no lado esquerdo
+        if(remover(&(*raizP)->esq,infoNodo) == 1){
+            Balanceamento(raizP);
+        }
+    }
+    
+    if((*raizP)->conteudo < infoNodo){//se esta na arvore, esta no lado direito
+        if(remover(&(*raizP)->dir,infoNodo) == 1){
+            Balanceamento(raizP);
+        }   
+    }
+
+    if((*raizP)->conteudo == infoNodo){ 
+        if((*raizP)->esq == NULL || (*raizP)->dir == NULL){//tem 0 ou 1 filho
+            removido = *raizP;
+            if((*raizP)->esq != NULL){//recebe o valor do filho    
+                (*raizP) =(*raizP)->esq;
+            }
+            else{
+                (*raizP) = (*raizP)->dir;
+            }
+            free(removido);
+        }
+        else{//tem 2 filhos
+            (*raizP)->conteudo = menor((*raizP)->dir);//o nodo a ser removido recebe o valor do primeiro nodo maior q ele 
+            remover(&(*raizP)->dir, (*raizP)->conteudo); //o nodo q teve o valor copiado eh removido
+            Balanceamento(raizP);
+        }
+        return 1;
+    }
+
+}
+
 void caso1(Nodo *raiz){ //insere aleatoriamente
     printf("____________________Caso 1____________________\n");
 
@@ -152,8 +204,7 @@ void caso1(Nodo *raiz){ //insere aleatoriamente
     printf("Informe quantos nodos deseja adicionar: ");
     scanf("%d", &numNodo);
         
-//        for(int i = 0; i < numNodo; i++){
-            //insere nodo
+    //insere nodo
     for(int i = 0; i < numNodo; i++){
         infoNodo = rand()%1000;
         insere(&raiz, infoNodo);
@@ -273,12 +324,73 @@ void caso2(Nodo *raiz){ //insere pré estabelecidos
     printf("\n\n");
 
 //removendo elementos
+    raiz = NULL;
+    printf("Removendo 1 - Caso 1");
+    insere(&raiz, 2);
+    insere(&raiz, 1);
+    insere(&raiz, 4);
+    insere(&raiz, 3);
+    insere(&raiz, 5);
+    printf("\nArvore antes de remover: ");
+    imprime(raiz);
+    remover(&raiz, 1);
+    printf("\nArvore depois de remover: ");
+    imprime(raiz);
+    limpa(raiz);
+    printf("\n\n");
+
+    raiz = NULL;
+    printf("Removendo 1 - Caso 2");
+    insere(&raiz, 6);
+    insere(&raiz, 2);
+    insere(&raiz, 9);
+    insere(&raiz, 1);
+    insere(&raiz, 8);    
+    insere(&raiz, 4);
+    insere(&raiz, 11);
+    insere(&raiz, 3);
+    insere(&raiz, 7);
+    insere(&raiz, 5);
+    insere(&raiz, 12);
+    insere(&raiz, 10);
+    insere(&raiz, 13);
+    printf("\nArvore antes de remover: ");
+    imprime(raiz);
+    remover(&raiz, 1);
+    printf("\nArvore depois de remover: ");
+    imprime(raiz);
+    limpa(raiz);
+    printf("\n\n");
+
+    raiz = NULL;
+    printf("Removendo 1 - Caso 3");
+    insere(&raiz, 5);
+    insere(&raiz, 2);
+    insere(&raiz, 8);
+    insere(&raiz, 1);
+    insere(&raiz, 3);    
+    insere(&raiz, 7);
+    insere(&raiz, 10);
+    insere(&raiz, 4);
+    insere(&raiz, 6);
+    insere(&raiz, 11);
+    insere(&raiz, 9);
+    insere(&raiz, 12);
+    printf("\nArvore antes de remover: ");
+    imprime(raiz);
+    remover(&raiz, 1);
+    printf("\nArvore depois de remover: ");
+    imprime(raiz);
+    limpa(raiz);
+    printf("\n\n");
+
 }
 
 int main(){
     Nodo *raiz = NULL;
         
     do{
+        raiz = NULL;
         printf("MENU:\n 1.Primeiro Cenário\n 2.Segundo Cenário\n 3.Sair\n");
         switch (getchar()){
             case '1':
