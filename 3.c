@@ -2,8 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-
-typedef struct Nodo{
+typedef struct Nodo{ 
     int conteudo;
     struct Nodo *esq, *dir;
 }Nodo;
@@ -26,28 +25,10 @@ int Altura(Nodo* raiz){ //altura da arvoree
 }
 
 int FB (Nodo* raiz){ //se FB >= -1 e <= 1, arvore ta balanceada
-    if(raiz == NULL){
+    if(raiz == NULL){ //fator de balanceamento
         return 0;
     }
     return Altura(raiz->esq) -Altura(raiz->dir);
-}
-
-void limpa(Nodo *raiz){ //limpa arvore
-    if(raiz != NULL){
-        free(raiz->esq);
-        free(raiz->dir);
-        free(raiz);
-    }
-}
-
-int menor(Nodo *atual){ //busca o valor do menor nodo
-    Nodo *n = atual;
-    Nodo *n2 = atual->esq;
-    while (n2 != NULL){
-        n = n2;
-        n2 = n2->esq;
-    }
-    return n->conteudo;
 }
 
 void RSE(Nodo **raizP){ //rotação simples esq
@@ -66,41 +47,41 @@ void RSD(Nodo **raizP){ //rotação simples dir
     (*raizP) = pAux;
 }
 
-int BalancaEsquerda(Nodo **raizP){
+int BalancearEsquerda(Nodo **raizP){
     int fbe = FB ((*raizP)->esq);
     if ( fbe > 0 ){
-        RSD(raizP);
+        RSD(raizP);//rotação simples direita
         return 1;
     }
-    else if (fbe < 0 ){ /* Rotação Dupla Direita */
+    else if (fbe < 0 ){ //Rotação Dupla Direita
         RSE( &((*raizP)->esq));
-        RSD( raizP ); /* &(*raizP) */
+        RSD( raizP ); 
         return 1;
     }
     return 0;
 }
 
-int BalancaDireita(Nodo **raizP){
+int BalancearDireita(Nodo **raizP){
     int fbd = FB( (*raizP)->dir);
     if ( fbd < 0 ){
-        RSE (raizP);
+        RSE (raizP); //rotação simples esq
         return 1;
     }
-    else if (fbd > 0 ){ /* Rotação Dupla Esquerda */
+    else if (fbd > 0 ){ //Rotação Dupla Esquerda
     RSD( &((*raizP)->dir) );
-    RSE( raizP ); /* &(*ppRaiz) */
+    RSE( raizP );
         return 1;
     }
     return 0;
 }
 
-int Balanceamento(Nodo **raizP){
-    int fb = FB(*raizP);
+int Balanceamento(Nodo **raizP){ //caso não esteja balanceada, de acordo com o fb faz o balanceamento pra esq ou dir
+    int fb = FB(*raizP); 
     if ( fb > 1){
-        return BalancaEsquerda(raizP);
+        return BalancearEsquerda(raizP);
     }
     else if (fb < -1 ){
-        return BalancaDireita(raizP);
+        return BalancearDireita(raizP);
     }
     else{
         return 0;
@@ -108,15 +89,14 @@ int Balanceamento(Nodo **raizP){
 }
 
 int insere(Nodo **raizP, int infoNodo){
-    if (*raizP == NULL){
+    if (*raizP == NULL){ //insere o primeiro nodo
         *raizP = (Nodo*)malloc(sizeof(Nodo));
         (*raizP)->conteudo = infoNodo;
         (*raizP)->esq = NULL;
         (*raizP)->dir = NULL;
         return 1;
     }
-
-    else if ( (*raizP)->conteudo > infoNodo){
+    else if ( (*raizP)->conteudo > infoNodo){ //insere do lado esquerdo
         if ( insere(&(*raizP)->esq,infoNodo)){
             if (Balanceamento(raizP)){
                 return 0;
@@ -126,8 +106,7 @@ int insere(Nodo **raizP, int infoNodo){
             }
         }
     }
-
-    else if ( (*raizP)->conteudo < infoNodo){
+    else if ( (*raizP)->conteudo < infoNodo){ //insere do lado direito
         if ( insere(&(*raizP)->dir,infoNodo) ){
             if (Balanceamento(raizP)){
                 return 0;
@@ -140,13 +119,12 @@ int insere(Nodo **raizP, int infoNodo){
             return 0;
         }
     }
-
-    else{
-        return 0; /* valor já presente */
+    else{ //ja existe um nodo com esse valor
+        return 0; 
     }
 }
 
-void imprime(Nodo *raiz){ //imprime o conteudo da arvore
+void imprime(Nodo *raiz){ //percorre a arvore e imprime o conteudo
     if(raiz != NULL){
         printf("%d(", raiz->conteudo);
         imprime(raiz->esq);
@@ -155,29 +133,46 @@ void imprime(Nodo *raiz){ //imprime o conteudo da arvore
     }
 }
 
-int remover(Nodo **raizP, int infoNodo){ //retorna 1 se encontra 
+void limpa(Nodo *raiz){ //limpa arvore
+    if(raiz != NULL){
+        limpa(raiz->esq);
+        limpa(raiz->dir);
+        free(raiz);
+    }
+}
+
+int menor(Nodo *atual){ //busca o valor do menor nodo
+    Nodo *n = atual;
+    Nodo *n2 = atual->esq;
+    while (n2 != NULL){
+        n = n2;
+        n2 = n2->esq;
+    }
+    return n->conteudo;
+}
+
+int remover(Nodo **raizP, int infoNodo){ //retorna 1 se removeu e 0 se não encontrar 
     Nodo *removido = NULL;
     if(*raizP == NULL){ //arvore vazia
         printf("Não encontrado!\n");
         return 0;
     }
-    
+    //percorre procurando, se remover faz o balanceamento
     if((*raizP)->conteudo > infoNodo){ //se esta na arvore, esta no lado esquerdo
         if(remover(&(*raizP)->esq,infoNodo) == 1){
             Balanceamento(raizP);
         }
     }
-    
     if((*raizP)->conteudo < infoNodo){//se esta na arvore, esta no lado direito
         if(remover(&(*raizP)->dir,infoNodo) == 1){
             Balanceamento(raizP);
         }   
     }
 
-    if((*raizP)->conteudo == infoNodo){ 
+    if((*raizP)->conteudo == infoNodo){ //se encontrou testa se
         if((*raizP)->esq == NULL || (*raizP)->dir == NULL){//tem 0 ou 1 filho
             removido = *raizP;
-            if((*raizP)->esq != NULL){//recebe o valor do filho    
+            if((*raizP)->esq != NULL){//recebe o valor do filho e eh removido   
                 (*raizP) =(*raizP)->esq;
             }
             else{
@@ -187,7 +182,7 @@ int remover(Nodo **raizP, int infoNodo){ //retorna 1 se encontra
         }
         else{//tem 2 filhos
             (*raizP)->conteudo = menor((*raizP)->dir);//o nodo a ser removido recebe o valor do primeiro nodo maior q ele 
-            remover(&(*raizP)->dir, (*raizP)->conteudo); //o nodo q teve o valor copiado eh removido
+            remover(&(*raizP)->dir, (*raizP)->conteudo); //o nodo q teve o valor copiado eh removido e faz o balanceamento
             Balanceamento(raizP);
         }
         return 1;
@@ -201,11 +196,11 @@ void caso1(Nodo *raiz){ //insere aleatoriamente
     int numNodo, infoNodo;
     srand(time(0));
 
-    printf("Informe quantos nodos deseja adicionar: ");
+    printf("Informe quantos nodos deseja adicionar: "); //solicita a quantidade de nodos
     scanf("%d", &numNodo);
         
     //insere nodo
-    for(int i = 0; i < numNodo; i++){
+    for(int i = 0; i < numNodo; i++){ //gera uma arvore com n nodos com valor aleatórios
         infoNodo = rand()%1000;
         insere(&raiz, infoNodo);
     }
@@ -223,15 +218,15 @@ void caso1(Nodo *raiz){ //insere aleatoriamente
     else{
         printf("\nNao eh arvore AVL \n\n");
     }
-//        }
+
     limpa(raiz);    
 }
 
 void caso2(Nodo *raiz){ //insere pré estabelecidos
-    printf("____________________Caso 2____________________\n");
-    raiz = NULL;
-    printf("Inserindo 15 - Caso 1");
-    insere(&raiz, 20);
+    printf("____________________Caso 2____________________\n"); //informa qual caso será executado 
+    raiz = NULL;                                                // gera a arvore antes de realizar a operação em questão, imprime ela
+    printf("Inserindo 15 - Caso 1");                            // insere ou retira o elemento e apresenta a nova arvore
+    insere(&raiz, 20);                                          //ao final de cada caso limpa a arvore
     insere(&raiz, 4);
     printf("\nArvore antes de inserir: ");
     imprime(raiz);
@@ -323,7 +318,7 @@ void caso2(Nodo *raiz){ //insere pré estabelecidos
     limpa(raiz);
     printf("\n\n");
 
-//removendo elementos
+    //removendo elementos
     raiz = NULL;
     printf("Removendo 1 - Caso 1");
     insere(&raiz, 2);
@@ -383,15 +378,14 @@ void caso2(Nodo *raiz){ //insere pré estabelecidos
     imprime(raiz);
     limpa(raiz);
     printf("\n\n");
-
 }
 
 int main(){
-    Nodo *raiz = NULL;
+    Nodo *raiz = NULL; //ponteiro pra raiz
         
-    do{
+    do{ //loop apresenta o menu de escolha do cenário até o usuario escolher a opção sair
         raiz = NULL;
-        printf("MENU:\n 1.Primeiro Cenário\n 2.Segundo Cenário\n 3.Sair\n");
+        printf("MENU:\n 1.Primeiro Cenário\n 2.Segundo Cenário\n 3.Sair\n"); 
         switch (getchar()){
             case '1':
                 caso1(raiz);
