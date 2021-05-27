@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+
 int *InsertionSort(int *vetor, int *v, int tam){
     for(int i=0; i<tam; i++){
         vetor[i] = v[i];
@@ -79,8 +80,48 @@ void QuickSort(int *vetor, int iniV, int fimV){
 //    return vetor;
 }
 
-//int *MergeSort(int *vetor, tam){
-//}
+/*          ERRO        */
+void merge(int *vetor, int ini, int meio, int fim) {
+    int i = ini, j = meio+1, comAux = 0, tam = fim-ini+1;
+    int *vetAux;
+    vetAux = (int*)malloc(tam * sizeof(int));
+
+    while(i <= meio && j <= fim){
+        if(vetor[i] < vetor[j]) {
+            vetAux[comAux] = vetor[i];
+            i++;
+        } else {
+            vetAux[comAux] = vetor[j];
+            j++;
+        }
+        comAux++;
+    }
+    while(i <= meio){  //tem elementos na primeira metade
+        vetAux[comAux] = vetor[i];
+        comAux++;
+        i++;
+    }
+    while(j <= fim) {   //tem elementos na segunda metade
+        vetAux[comAux] = vetor[j];
+        comAux++;
+        j++;
+    }
+    for(comAux = ini; comAux <= fim; comAux++){  
+        vetor[comAux] = vetAux[comAux-ini];
+    }
+    free(vetAux);
+}
+
+void mergeSort(int *vetor, int ini, int fim){
+    if (ini < fim) {
+        int meio = (fim+ini)/2;
+
+        mergeSort(vetor, ini, meio);
+        mergeSort(vetor, meio+1, fim);
+        merge(vetor, ini, meio, fim);
+    }
+}
+
 
 int *Insere(int vetor[],int tam){
     srand(time(0));
@@ -127,6 +168,14 @@ int main(){
                 vetor[k] = v[k];
             }
             QuickSort(vetor, vetor[0], vetor[tam-1]);
+            Imprime(vetor,tam);
+            printf("\n");
+            
+            printf("MS: ");
+            for(int k=0; k<tam; k++){
+                vetor[k] = v[k];
+            }
+            mergeSort(vetor, vetor[0], vetor[tam-1]);
             Imprime(vetor,tam);
             printf("\n");
             
