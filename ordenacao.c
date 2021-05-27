@@ -3,7 +3,8 @@
 2- O programa deve solicitar o tamanho do vetor de números (n) que será ordenado
 3- O programa deve preencher um vetor de tamanho n com números aleatórios. Usar srand(time(NULL)); no inicio do programa.
 4- Faça um código que verifica se o resultado dado por cada algoritmo de ordenação está correto.
-5- Use a melhor lib para calcular quanto tempo cada algoritmo de ordenação levou para terminar: https://levelup.gitconnected.com/8-ways-to-measure-execution-time-in-c-c-48634458d0f9
+5- Use a melhor lib para calcular quanto tempo cada algoritmo de ordenação levou para terminar:
+https://levelup.gitconnected.com/8-ways-to-measure-execution-time-in-c-c-48634458d0f9
 6- No 1:1 vou perguntar sobre questões de desempenho relacionadas a esse exercício, então pense sobre desempenho, otimizações, avaliação de tempo, complexidade, hardware, etc
 */
 
@@ -11,24 +12,26 @@
 #include <stdlib.h>
 #include <time.h>
 
-int *Insere(int vetor[],int tam){
+void Insere(int *vetor,int tam){
     srand(time(0));
     for(int i = 0; i < tam; i++){
         vetor[i] = rand()%1000;
     }
-    return vetor;
 }
 
-void Imprime(int vetor[],int tam){
+void Imprime(int *vetor,int tam){
     for(int i = 0; i < tam; i++){
         printf("%d ", vetor[i]);
     }
 }
 
-void InsertionSort(int *vetor, int *v, int tam){
+void Copia(int *vetor, int *v, int tam){
     for(int i=0; i<tam; i++){
         vetor[i] = v[i];
     }
+}
+
+void InsertionSort(int *vetor, int tam){
     int j, aux;
     for(int i = 1; i < tam; i++){
         j = i - 1;
@@ -41,10 +44,7 @@ void InsertionSort(int *vetor, int *v, int tam){
     }
 }
 
-void SelectionSort(int *vetor, int *v, int tam){
-    for(int i=0; i<tam; i++){
-        vetor[i] = v[i];
-    }
+void SelectionSort(int *vetor, int tam){
     int j, min, aux = 0; 
     for (int i = 0; i < tam -1; i++){ 
         min = i; 
@@ -81,13 +81,10 @@ void QuickSort(int *vetor, int iniV, int fimV){
             j--;
         }
     }while(j > i);
-    Imprime(vetor,i);
     if(iniV < j){
-       printf("if\n");
        QuickSort(vetor,iniV,j);
     }
     if(i < fimV){
-       printf("ok\n");
        QuickSort(vetor,i,fimV);
     }
 }
@@ -123,71 +120,68 @@ void merge(int *vetor, int ini, int meio, int fim) {
     free(vetAux);
 }
 
-void mergeSort(int *vetor, int ini, int fim){
+void MergeSort(int *vetor, int ini, int fim){
     if (ini < fim) {
         int meio = (fim+ini)/2;
 
-        mergeSort(vetor, ini, meio);
-        mergeSort(vetor, meio+1, fim);
+        MergeSort(vetor, ini, meio);
+        MergeSort(vetor, meio+1, fim);
         merge(vetor, ini, meio, fim);
     }
 }
 
+void Tempo(){
+    
+}
 
 int main(){
-    int *vetor = NULL;
-    int *v = NULL;
     int tam;
     do{
         printf("Deseja gerar um novo vetor?\n S. Sim\n N. Não\n");
-        if(getchar() == 'S'){
-            printf("Qual o tamanho do vetor? ");
-            scanf("%d", &tam);
-            vetor = (int *)realloc(vetor,(sizeof(int)*(tam+1)));
-            v = (int *)realloc(v,(sizeof(int)*(tam+1)));
-            v = Insere(v,tam);
-            printf(" V: ");
-            Imprime(v,tam);
-            printf("\n");
-            
-            printf("IS: ");
-            InsertionSort(vetor,v,tam);
-            Imprime(vetor,tam);
-            printf("\n");
-            
-            printf("SS: ");
-            SelectionSort(vetor,v,tam);
-            Imprime(vetor,tam);
-            printf("\n");
-            
-            printf("QS: ");
-            for(int k=0; k<tam; k++){
-                vetor[k] = v[k];
-            }
-            QuickSort(vetor, 0, tam-1);//posições
-            printf("\n");
-            Imprime(vetor,tam);
-            printf("\n");
-            
-            printf("MS: ");
-            for(int k=0; k<tam; k++){
-                vetor[k] = v[k];
-            }
-            mergeSort(vetor, 0, tam-1);
-            Imprime(vetor,tam);
-            printf("\n");
-            
-            printf(" V: ");
-            Imprime(v,tam);
-            printf("\n");
-            
-            //relatorio
+        switch(getchar()){
+            case 'S':
+                printf("Qual o tamanho do vetor? ");
+                scanf("%d", &tam);
+                int *vetor = (int *)malloc((sizeof(int)*(tam+1)));
+                int *v = (int *)malloc((sizeof(int)*(tam+1)));    
+                Insere(v,tam);
+                
+                printf("\nVetor Original: ");
+                Imprime(v,tam);
+                
+                printf("\n\nInsertion Sort: ");
+                Copia(vetor,v,tam);
+                InsertionSort(vetor,tam);
+                Imprime(vetor,tam);
+//                printf("Tempo de execução: %f\n", );
+                
+                printf("\nSelection Sort: ");
+                Copia(vetor,v,tam);
+                SelectionSort(vetor,tam);
+                Imprime(vetor,tam);
+//                printf("Tempo de execução: %f\n", );
+                
+                printf("\nQuick Sort: ");
+                Copia(vetor,v,tam);
+                QuickSort(vetor, 0, tam-1);
+                Imprime(vetor,tam);
+//                printf("Tempo de execução: %f\n", );
+
+                printf("\nMerge Sort: ");
+                Copia(vetor,v,tam);
+                MergeSort(vetor, 0, tam-1);                
+                Imprime(vetor,tam);
+//                printf("Tempo de execução: %f\n", );
+                
+                free(vetor);
+                free(v);
+                break;
+            case 'N':
+                exit(1);    
+            default:
+                printf("Opção inválida!\n");
         }
-        else{
-            free(vetor);
-            free(v);
-            exit(1);
-        }
-    }while(getchar()!='N');
+        printf("\n");
+    }while(getchar());
     exit(0);
 }
