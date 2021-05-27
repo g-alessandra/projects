@@ -11,8 +11,21 @@
 #include <stdlib.h>
 #include <time.h>
 
+int *Insere(int vetor[],int tam){
+    srand(time(0));
+    for(int i = 0; i < tam; i++){
+        vetor[i] = rand()%1000;
+    }
+    return vetor;
+}
 
-int *InsertionSort(int *vetor, int *v, int tam){
+void Imprime(int vetor[],int tam){
+    for(int i = 0; i < tam; i++){
+        printf("%d ", vetor[i]);
+    }
+}
+
+void InsertionSort(int *vetor, int *v, int tam){
     for(int i=0; i<tam; i++){
         vetor[i] = v[i];
     }
@@ -26,10 +39,9 @@ int *InsertionSort(int *vetor, int *v, int tam){
         }
         vetor[j+1] = aux;
     }
-    return vetor;
 }
 
-int *SelectionSort(int *vetor, int *v, int tam){
+void SelectionSort(int *vetor, int *v, int tam){
     for(int i=0; i<tam; i++){
         vetor[i] = v[i];
     }
@@ -47,10 +59,8 @@ int *SelectionSort(int *vetor, int *v, int tam){
             vetor[min] = aux;
         }
     }
-    return vetor;
 }
 
-/*          ERRO        */
 void QuickSort(int *vetor, int iniV, int fimV){
     int mid, aux, i, j;
     i = iniV;
@@ -71,16 +81,17 @@ void QuickSort(int *vetor, int iniV, int fimV){
             j--;
         }
     }while(j > i);
+    Imprime(vetor,i);
     if(iniV < j){
+       printf("if\n");
        QuickSort(vetor,iniV,j);
     }
     if(i < fimV){
+       printf("ok\n");
        QuickSort(vetor,i,fimV);
     }
-//    return vetor;
 }
 
-/*          ERRO        */
 void merge(int *vetor, int ini, int meio, int fim) {
     int i = ini, j = meio+1, comAux = 0, tam = fim-ini+1;
     int *vetAux;
@@ -123,20 +134,6 @@ void mergeSort(int *vetor, int ini, int fim){
 }
 
 
-int *Insere(int vetor[],int tam){
-    srand(time(0));
-    for(int i = 0; i < tam; i++){
-        vetor[i] = rand()%1000;
-    }
-    return vetor;
-}
-
-void Imprime(int vetor[],int tam){
-    for(int i = 0; i < tam; i++){
-        printf("%d ", vetor[i]);
-    }
-}
-
 int main(){
     int *vetor = NULL;
     int *v = NULL;
@@ -154,12 +151,12 @@ int main(){
             printf("\n");
             
             printf("IS: ");
-            vetor = InsertionSort(vetor,v,tam);
+            InsertionSort(vetor,v,tam);
             Imprime(vetor,tam);
             printf("\n");
             
             printf("SS: ");
-            vetor = SelectionSort(vetor,v,tam);
+            SelectionSort(vetor,v,tam);
             Imprime(vetor,tam);
             printf("\n");
             
@@ -167,7 +164,8 @@ int main(){
             for(int k=0; k<tam; k++){
                 vetor[k] = v[k];
             }
-            QuickSort(vetor, vetor[0], vetor[tam-1]);
+            QuickSort(vetor, 0, tam-1);//posições
+            printf("\n");
             Imprime(vetor,tam);
             printf("\n");
             
@@ -175,7 +173,7 @@ int main(){
             for(int k=0; k<tam; k++){
                 vetor[k] = v[k];
             }
-            mergeSort(vetor, vetor[0], vetor[tam-1]);
+            mergeSort(vetor, 0, tam-1);
             Imprime(vetor,tam);
             printf("\n");
             
