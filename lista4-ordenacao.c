@@ -3,33 +3,33 @@
 #include <time.h>
 #include <sys/time.h>
 
-void Insere(int *vetor,int tam){
+void Insere(int *vetor,int tam){ //recebe o ponteiro pro vetor e o tamanho do vetor
     srand(time(0));
-    for(int i = 0; i < tam; i++){
+    for(int i = 0; i < tam; i++){ //preenche o vetor usando valores aleatorios
         vetor[i] = rand()%1000;
     }
 }
 
-void Imprime(int *vetor,int tam){
-    for(int i = 0; i < tam; i++){
+void Imprime(int *vetor,int tam){//recebe o ponteiro pro vetor e o tamanho do vetor
+    for(int i = 0; i < tam; i++){ //percorre o vetor imprimimindo o valor presente na
         printf("%d ", vetor[i]);
     }
 }
 
-void Copia(int *vetor, int *v, int tam){
-    for(int i=0; i<tam; i++){
+void Copia(int *vetor, int *v, int tam){ //para garantir que o vetor orignal nao fosse alterado nas ordenações foi criada a função copia, que ira gera um novo vetor
+    for(int i=0; i<tam; i++){                   //igual ao gerado pela função inserir
         vetor[i] = v[i];
     }
 }
 
-void Verifica(int *vetor, int tam) {
+void Verifica(int *vetor, int tam) {//vai percorrer o vetor verificando se ele ta em ordem crescente, para isso vai comparar o elemento atual com seu anterior
     int erro = 0;
     for(int i = 1; i < tam; i++) {
         if(vetor[i-1] > vetor[i]){
             erro = 1;
         }
     }
-    if(erro == 0){
+    if(erro == 0){ //e informar se o resultado esta correto
         printf("\nO resultado está correto!\n");
     }
     else{ 
@@ -37,9 +37,9 @@ void Verifica(int *vetor, int tam) {
     }
 }
 
-void InsertionSort(int *vetor, int tam){
+void InsertionSort(int *vetor, int tam){ //ele percorre um vetor de elementos da esquerda para a direita e à medida que avança os elementos mais à esquerda ficam ordenados. 
     int j, aux;
-    for(int i = 1; i < tam; i++){
+    for(int i = 1; i < tam; i++){ //para isso a cada posição a partir da segunda é comparada com os elementos anteriores e colocada na posição correta. 
         j = i - 1;
         aux = vetor[i];
         while((j >= 0) && (aux < vetor[j])){
@@ -50,8 +50,8 @@ void InsertionSort(int *vetor, int tam){
     }
 }
 
-void SelectionSort(int *vetor, int tam){
-    int j, min, aux = 0; 
+void SelectionSort(int *vetor, int tam){ //consiste em selecionar o menor item e colocar na primeira posição, selecionar o segundo menor item e colocar na segunda posição, 
+    int j, min, aux = 0;                     // segue estes passos até que reste um único elemento.
     for (int i = 0; i < tam -1; i++){ 
         min = i; 
         for (j = i+1; j < tam; j++){ 
