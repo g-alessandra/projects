@@ -69,68 +69,68 @@ void SelectionSort(int *vetor, int tam){ //consiste em selecionar o menor item e
 
 void QuickSort(int *vetor, int iniV, int fimV){
     int mid, aux, i, j;
-    i = iniV;
-    j = fimV;
-    mid = vetor[(iniV + fimV)/2]; 
-    do{ 
-        while(vetor[i] < mid){ 
+    i = iniV; //o i recebe o indice da posicao inicial
+    j = fimV; //j recebe o indice da posicao final
+    mid = vetor[(iniV + fimV)/2]; //o pivo vai ser o elemento presenter na posição do meio do vetor
+    do{                                 //enquato o j for > i;
+        while(vetor[i] < mid){ //percorre o vetor incremento i enquanto o elemento no vetor[i] for menor q o pivo incrementando o i
             i++;
         }
-        while(mid < vetor[j]){ 
+        while(mid < vetor[j]){  //depois percorre decrementando j enquanto pivo for menor vetor[j]
             j--;
         }
-        if(i <= j) {
-            aux = vetor[i];
+        if(i <= j) { //caso i seja menor q j, ou seja o pivo ainda n esta ordenado
+            aux = vetor[i];          //faz a troca entre eles
             vetor[i] = vetor[j];
             vetor[j] = aux;
             i++;
             j--;
         }
-    }while(j > i);
-    if(iniV < j){
-       QuickSort(vetor,iniV,j);
+    }while(j > i); //quado o pivo estiver no lugar correto sai do laço
+    if(iniV < j){ //caso ainda tenha elementos desordenados a esq do pivo entra no 1 if caso seja a esq entra no segundo if
+       QuickSort(vetor,iniV,j); //entao é chamada a funçao quick sort novamente, até q tanto o lado esq quanto direto do pivo estejjam ordenados
     }
     if(i < fimV){
        QuickSort(vetor,i,fimV);
     }
 }
 
-void merge(int *vetor, int ini, int meio, int fim) {
-    int i = ini, j = meio+1, comAux = 0, tam = fim-ini+1;
-    int *vetAux;
+void merge(int *vetor, int ini, int meio, int fim) { //recebe *vetr, indicie do inicio, meio e do fim
+    int i = ini, j = meio+1, comAux = 0, tam = fim-ini+1; //j vai receber meio+1
+    int *vetAux;                                    //gera um vetor auxiliar
     vetAux = (int*)malloc(tam * sizeof(int));
-    while(i <= meio && j <= fim){
-        if(vetor[i] < vetor[j]) {
+    while(i <= meio && j <= fim){   // enquanto as duas metades n chegarem no limite
+        if(vetor[i] < vetor[j]) {    //vai testar se v[i] é menor q v[j], e vai copiar o menor deles pro vetor auxiliar 
             vetAux[comAux] = vetor[i];
             i++;
-        } else {
+        } else { 
             vetAux[comAux] = vetor[j];
             j++;
         }
         comAux++;
     }
-    while(i <= meio){  //tem elementos na primeira metade
+    while(i <= meio){  //se ainda tiver elementos na primeira metade copia eles pro auxiliar
         vetAux[comAux] = vetor[i];
         comAux++;
         i++;
     }
-    while(j <= fim) {   //tem elementos na segunda metade
+    while(j <= fim) {   //e depois copia os da segunda metade, se houver
         vetAux[comAux] = vetor[j];
         comAux++;
         j++;
     }
-    for(comAux = ini; comAux <= fim; comAux++){  
+    for(comAux = ini; comAux <= fim; comAux++){  //após copia os dados do vetor aux pro vetor
         vetor[comAux] = vetAux[comAux-ini];
     }
-    free(vetAux);
+    free(vetAux); //e desaloca o vetor auxilar
 }
 
-void MergeSort(int *vetor, int ini, int fim){
-    if (ini < fim) {
-        int meio = (fim+ini)/2;
-        MergeSort(vetor, ini, meio);
-        MergeSort(vetor, meio+1, fim);
-        merge(vetor, ini, meio, fim);
+void MergeSort(int *vetor, int ini, int fim){ //recebe *vetor, indice do inicio e fim
+    if (ini < fim) { //se inicio for menor q o fim, ou seja tem mais de um elemento
+        int meio = (fim+ini)/2; //calcua o meio
+        MergeSort(vetor, ini, meio); //e chama merge sort pra primeira metade
+        MergeSort(vetor, meio+1, fim); //depois pra segunda metade
+        merge(vetor, ini, meio, fim); //e então aciona a função merge
     }
 }
 
